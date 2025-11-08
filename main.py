@@ -39,29 +39,39 @@ class Booking(BaseModel):
     notes: str | None = None
 
 def get_sheet():
-    print("get_sheet")
-    creds_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
-    print("creds_dict")
-    creds = Credentials.from_service_account_info(
-        creds_dict,
-        scopes=[
-            "https://spreadsheets.google.com/feeds",
-            "https://www.googleapis.com/auth/drive",
-            "https://www.googleapis.com/auth/spreadsheets"]
-    )
-    print("creds")
-    client = gspread.authorize(creds)
-    print("client")
-    print(client)
-    spreadsheet = client.open_by_key(os.getenv("GOOGLE_SHEET_ID"))
-    print('spreadshit')
-    print(spreadsheet)
-    sheet = spreadsheet.worksheet("bookings")
-    print('shit')
-    print(sheet)
-    print("sheet")
-    return sheet
-
+    try:
+        print("get_sheet")
+        creds_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
+        print("creds_dict")
+        creds = Credentials.from_service_account_info(
+            creds_dict,
+            scopes=[
+                "https://spreadsheets.google.com/feeds",
+                "https://www.googleapis.com/auth/drive",
+                "https://www.googleapis.com/auth/spreadsheets"]
+        )
+        print("creds")
+        client = gspread.authorize(creds)
+        print("client")
+        print(client)
+    except Exception as e:
+        raise RuntimeError(f"❌ Failed to load service account credentials: {e}")
+    try:
+        print(os.getenv("GOOGLE_SHEET_ID"))
+        spreadsheet = client.open_by_key(os.getenv("GOOGLE_SHEET_ID"))
+        print('spreadshit')
+        print(spreadsheet)
+    except Exception as e:
+        raise RuntimeError(f"❌ Failed to load spreadsheet: {e}")
+    try:
+        worksheet = spreadsheet.worksheet("bookings")
+        print('shit')
+        print(worksheet)
+        print("sheet")
+        return worksheet
+    except Exception as e:
+        raise RuntimeError(f"❌ Failed to sheet: {e}")
+    
 @app.post("/api/bookings")
 def create_booking(booking: Booking):
     try:
