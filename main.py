@@ -42,6 +42,7 @@ class Booking(BaseModel):
 def get_sheet():
     try:
         scopes = [ "https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+        
         credentials_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
         credentials_dict = json.loads(credentials_json)
         print('credentials_json')
@@ -49,7 +50,14 @@ def get_sheet():
         print('credentials_dict')
         print(credentials_dict)
 
-        creds = service_account.Credentials.from_service_account_info(credentials_json, scopes=scopes)
+        sheet_id_json = os.getenv("GOOGLE_SHEET_ID")
+        sheet_id_dict = json.loads(sheet_id_json)
+        print('sheet_id_json')
+        print(sheet_id_json)
+        print('sheet_id_dict')
+        print(sheet_id_dict)
+
+        creds = service_account.Credentials.from_service_account_info(credentials_dict, scopes=scopes)
         print('creds')
         print(creds)
 
@@ -60,13 +68,6 @@ def get_sheet():
         spreadsheets = client.list_spreadsheet_files() 
         print('spreadsheets')
         print(spreadsheets)
-        
-        sheet_id_json = os.getenv("GOOGLE_SHEET_ID")
-        sheet_id_dict = json.loads(sheet_id_json)
-        print('sheet_id_json')
-        print(sheet_id_json)
-        print('sheet_id_dict')
-        print(sheet_id_dict)
 
         spreadsheet = client.open_by_key(sheet_id_json)
         print('spreadsheet')
