@@ -4,6 +4,7 @@ from pydantic import BaseModel
 import gspread
 # from google.oauth2.service_account import Credentials
 from google.oauth2 import service_account
+from oauth2client.service_account import ServiceAccountCredentials
 import datetime
 import os
 import json
@@ -56,11 +57,13 @@ def get_sheet():
 
         creds = service_account.Credentials.from_service_account_info(credentials_dict, scopes=scopes)
         print('creds')
-        print(creds)
+        print(type(creds))
 
-        client = gspread.authorize(creds)
+        credss = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, scopes)
+
+        client = gspread.authorize(credss)
         print('client')
-        print(client)
+        print(type(client))
 
         spreadsheets = client.list_spreadsheet_files() 
         print('spreadsheets')
@@ -75,76 +78,76 @@ def get_sheet():
         print(f"An unexpected error occurred during client creation: {e}")
         exit()
 
-# def get_sheet():
-#     try:
-#         credentials_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
-#         print('creds')
+def get_sheets():
+    try:
+        credentials_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
+        print('creds')
 
-#         # Authenticate using the dictionary
-#         gc = gspread.service_account_from_dict(credentials_dict)
-#         print('gc')
+        # Authenticate using the dictionary
+        gc = gspread.service_account_from_dict(credentials_dict)
+        print('gc')
 
-#         spreadsheets = gc.list_spreadsheet_files() 
-#         print(f"Successfully connected to Google API. Found {len(spreadsheets)} files.")
-#     except gspread.APIError as e:
-#         print(f"API Error during authentication or connection check: {e}")
-#         # You might want to print parts of the credentials_dict for debugging (be careful with sensitive keys)
-#         exit()
-#     except Exception as e:
-#         print(f"An unexpected error occurred during client creation: {e}")
-#         exit()
+        spreadsheets = gc.list_spreadsheet_files() 
+        print(f"Successfully connected to Google API. Found {len(spreadsheets)} files.")
+    except gspread.APIError as e:
+        print(f"API Error during authentication or connection check: {e}")
+        # You might want to print parts of the credentials_dict for debugging (be careful with sensitive keys)
+        exit()
+    except Exception as e:
+        print(f"An unexpected error occurred during client creation: {e}")
+        exit()
 
-#     try:
-#         # 2. Open the spreadsheet using its file ID
-#         spreadsheet_file_id = os.getenv("GOOGLE_SHEET_ID")
-#         sh = gc.open_by_key(spreadsheet_file_id)
-#         print('sh')
-#         print(f"Successfully opened spreadsheet: {sh.title}")
+    try:
+        # 2. Open the spreadsheet using its file ID
+        spreadsheet_file_id = os.getenv("GOOGLE_SHEET_ID")
+        sh = gc.open_by_key(spreadsheet_file_id)
+        print('sh')
+        print(f"Successfully opened spreadsheet: {sh.title}")
 
-#         # Select a worksheet
-#         worksheet = sh.get_worksheet(0)
-#         print('worksheet')
+        # Select a worksheet
+        worksheet = sh.get_worksheet(0)
+        print('worksheet')
 
-#         return worksheet
-#     except Exception as e:
-#         raise RuntimeError(f"❌ Failed to get gspread: {e}")
-#     except gspread.SpreadsheetNotFound:
-#         print(f"Error: Spreadsheet with ID '{spreadsheet_file_id}' not found.")
-#     except gspread.APIError as e:
-#         print(f"Error when opening spreadsheet: {e}")
+        return worksheet
+    except Exception as e:
+        raise RuntimeError(f"❌ Failed to get gspread: {e}")
+    except gspread.SpreadsheetNotFound:
+        print(f"Error: Spreadsheet with ID '{spreadsheet_file_id}' not found.")
+    except gspread.APIError as e:
+        print(f"Error when opening spreadsheet: {e}")
 
-#     # try:
-#     #     print("get_sheet")
-#     #     creds_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
-#     #     print("creds_dict")
-#     #     creds = Credentials.from_service_account_info(
-#     #         creds_dict,
-#     #         scopes=[
-#     #             "https://www.googleapis.com/auth/spreadsheets",
-#     #             "https://www.googleapis.com/auth/drive"
-#     #         ]
-#     #     )
-#     #     print("creds")
-#     #     client = gspread.authorize(creds)
-#     #     print("client")
-#     #     print(client)
-#     # except Exception as e:
-#     #     raise RuntimeError(f"❌ Failed to load service account credentials: {e}")
-#     # try:
-#     #     print(os.getenv("GOOGLE_SHEET_ID"))
-#     #     spreadsheet = client.open_by_key(os.getenv("GOOGLE_SHEET_ID"))
-#     #     print('spreadshit')
-#     #     print(spreadsheet)
-#     # except Exception as e:
-#     #     raise RuntimeError(f"❌ Failed to load spreadsheet: {e}")
-#     # try:
-#     #     worksheet = spreadsheet.worksheet("bookings")
-#     #     print('shit')
-#     #     print(worksheet)
-#     #     print("sheet")
-#     #     return worksheet
-#     # except Exception as e:
-#         raise RuntimeError(f"❌ Failed to sheet: {e}")
+    # try:
+    #     print("get_sheet")
+    #     creds_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
+    #     print("creds_dict")
+    #     creds = Credentials.from_service_account_info(
+    #         creds_dict,
+    #         scopes=[
+    #             "https://www.googleapis.com/auth/spreadsheets",
+    #             "https://www.googleapis.com/auth/drive"
+    #         ]
+    #     )
+    #     print("creds")
+    #     client = gspread.authorize(creds)
+    #     print("client")
+    #     print(client)
+    # except Exception as e:
+    #     raise RuntimeError(f"❌ Failed to load service account credentials: {e}")
+    # try:
+    #     print(os.getenv("GOOGLE_SHEET_ID"))
+    #     spreadsheet = client.open_by_key(os.getenv("GOOGLE_SHEET_ID"))
+    #     print('spreadshit')
+    #     print(spreadsheet)
+    # except Exception as e:
+    #     raise RuntimeError(f"❌ Failed to load spreadsheet: {e}")
+    # try:
+    #     worksheet = spreadsheet.worksheet("bookings")
+    #     print('shit')
+    #     print(worksheet)
+    #     print("sheet")
+    #     return worksheet
+    # except Exception as e:
+        raise RuntimeError(f"❌ Failed to sheet: {e}")
     
 @app.post("/api/bookings")
 def create_booking(booking: Booking):
