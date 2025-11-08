@@ -50,12 +50,9 @@ def get_sheet():
         print('credentials_dict')
         print(credentials_dict)
 
-        sheet_id_json = os.getenv("GOOGLE_SHEET_ID")
-        sheet_id_dict = json.loads(sheet_id_json)
-        print('sheet_id_json')
-        print(sheet_id_json)
-        print('sheet_id_dict')
-        print(sheet_id_dict)
+        sheet_id = os.getenv("GOOGLE_SHEET_ID")
+        print('sheet_id')
+        print(sheet_id)
 
         creds = service_account.Credentials.from_service_account_info(credentials_dict, scopes=scopes)
         print('creds')
@@ -69,7 +66,7 @@ def get_sheet():
         print('spreadsheets')
         print(spreadsheets)
 
-        spreadsheet = client.open_by_key(sheet_id_json)
+        spreadsheet = client.open_by_key(sheet_id)
         print('spreadsheet')
         print(spreadsheet)
         
