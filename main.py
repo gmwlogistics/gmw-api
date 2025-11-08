@@ -53,9 +53,7 @@ def create_booking(booking: Booking):
     try:
         print('bookings information')
         print(booking)
-
-        destination_address='123 Main Street, Springfield' home_size='3BHK' special_items='none' packing_service='Yes' packing_materials='Yes' specialty_items_check='Yes' protection_plan='Yes' estimated_hours='6' payment_method='Credit Card' estimated_cost='500' notes='none'
-
+        
         sheet = get_sheet()
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         order_id = str(uuid.uuid4())
