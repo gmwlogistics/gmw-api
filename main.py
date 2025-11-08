@@ -40,36 +40,57 @@ class Booking(BaseModel):
 
 def get_sheet():
     try:
-        print("get_sheet")
-        creds_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
-        print("creds_dict")
-        creds = Credentials.from_service_account_info(
-            creds_dict,
-            scopes=[
-                "https://spreadsheets.google.com/feeds",
-                "https://www.googleapis.com/auth/drive",
-                "https://www.googleapis.com/auth/spreadsheets"]
-        )
-        print("creds")
-        client = gspread.authorize(creds)
-        print("client")
-        print(client)
-    except Exception as e:
-        raise RuntimeError(f"❌ Failed to load service account credentials: {e}")
-    try:
-        print(os.getenv("GOOGLE_SHEET_ID"))
-        spreadsheet = client.open_by_key(os.getenv("GOOGLE_SHEET_ID"))
-        print('spreadshit')
-        print(spreadsheet)
-    except Exception as e:
-        raise RuntimeError(f"❌ Failed to load spreadsheet: {e}")
-    try:
-        worksheet = spreadsheet.worksheet("bookings")
-        print('shit')
-        print(worksheet)
-        print("sheet")
+        credentials_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
+        print('creds')
+
+        # Authenticate using the dictionary
+        gc = gspread.service_account_from_dict(credentials_dict)
+        print('gc')
+
+        # 2. Open the spreadsheet using its file ID
+        spreadsheet_file_id = os.getenv("GOOGLE_SHEET_ID")
+        sh = gc.open_by_key(spreadsheet_file_id)
+        print('sh')
+
+        # Select a worksheet
+        worksheet = sh.get_worksheet(0)
+        print('worksheet')
+        
         return worksheet
     except Exception as e:
+        raise RuntimeError(f"❌ Failed to get gspread: {e}")
+
+    # try:
+    #     print("get_sheet")
+    #     creds_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
+    #     print("creds_dict")
+    #     creds = Credentials.from_service_account_info(
+    #         creds_dict,
+    #         scopes=[
+    #             "https://www.googleapis.com/auth/spreadsheets",
+    #             "https://www.googleapis.com/auth/drive"
+    #         ]
+    #     )
+    #     print("creds")
+    #     client = gspread.authorize(creds)
+    #     print("client")
+    #     print(client)
+    # except Exception as e:
+    #     raise RuntimeError(f"❌ Failed to load service account credentials: {e}")
+    # try:
+    #     print(os.getenv("GOOGLE_SHEET_ID"))
+    #     spreadsheet = client.open_by_key(os.getenv("GOOGLE_SHEET_ID"))
+    #     print('spreadshit')
+    #     print(spreadsheet)
+    # except Exception as e:
+    #     raise RuntimeError(f"❌ Failed to load spreadsheet: {e}")
+    # try:
+    #     worksheet = spreadsheet.worksheet("bookings")
+    #     print('shit')
+    #     print(worksheet)
+    #     print("sheet")
+    #     return worksheet
+    # except Exception as e:
         raise RuntimeError(f"❌ Failed to sheet: {e}")
     
 @app.post("/api/bookings")
