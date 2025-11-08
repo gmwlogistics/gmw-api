@@ -51,6 +51,8 @@ def get_sheet():
 @app.post("/api/bookings")
 def create_booking(booking: Booking):
     try:
+        print('bookings information')
+        print(booking)
         sheet = get_sheet()
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         order_id = str(uuid.uuid4())
