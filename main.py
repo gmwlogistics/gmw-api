@@ -53,6 +53,9 @@ def create_booking(booking: Booking):
     try:
         print('bookings information')
         print(booking)
+
+        destination_address='123 Main Street, Springfield' home_size='3BHK' special_items='none' packing_service='Yes' packing_materials='Yes' specialty_items_check='Yes' protection_plan='Yes' estimated_hours='6' payment_method='Credit Card' estimated_cost='500' notes='none'
+
         sheet = get_sheet()
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         order_id = str(uuid.uuid4())
@@ -79,7 +82,31 @@ def create_booking(booking: Booking):
             timestamp,
             "Pending"
         ]
-        sheet.append_row(row)
+        row1 = [
+            "order_id",
+            "booking.customer_name",
+            "booking.email",
+            "booking.phone",
+            "booking.move_date",
+            "booking.move_time",
+            "booking.move_type",
+            "booking.origin_address",
+            "booking.destination_address",
+            "booking.home_size",
+            "booking.special_items",
+            "booking.packing_service",
+            "booking.packing_materials",
+            "booking.specialty_items_check",
+            "booking.protection_plan",
+            "booking.estimated_hours",
+            "booking.payment_method",
+            "booking.estimated_cost",
+            "booking.notes",
+            "timestamp",
+            "Pending"
+        ]
+        print ('rows are ready')
+        sheet.append_row(row1)
         return {"status": "success", "order_id": order_id, "message": "Booking saved successfully."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
