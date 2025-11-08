@@ -47,18 +47,34 @@ def get_sheet():
         gc = gspread.service_account_from_dict(credentials_dict)
         print('gc')
 
+        spreadsheets = gc.list_spreadsheet_files() 
+        print(f"Successfully connected to Google API. Found {len(spreadsheets)} files.")
+    except gspread.APIError as e:
+        print(f"API Error during authentication or connection check: {e}")
+        # You might want to print parts of the credentials_dict for debugging (be careful with sensitive keys)
+        exit()
+    except Exception as e:
+        print(f"An unexpected error occurred during client creation: {e}")
+        exit()
+
+    try:
         # 2. Open the spreadsheet using its file ID
         spreadsheet_file_id = os.getenv("GOOGLE_SHEET_ID")
         sh = gc.open_by_key(spreadsheet_file_id)
         print('sh')
+        print(f"Successfully opened spreadsheet: {sh.title}")
 
         # Select a worksheet
         worksheet = sh.get_worksheet(0)
         print('worksheet')
-        
+
         return worksheet
     except Exception as e:
         raise RuntimeError(f"❌ Failed to get gspread: {e}")
+    except gspread.SpreadsheetNotFound:
+        print(f"Error: Spreadsheet with ID '{spreadsheet_file_id}' not found.")
+    except gspread.APIError as e:
+        print(f"Error when opening spreadsheet: {e}")
 
     # try:
     #     print("get_sheet")
