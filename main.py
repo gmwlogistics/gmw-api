@@ -52,7 +52,13 @@ def get_sheet():
     print("creds")
     client = gspread.authorize(creds)
     print("client")
-    sheet = client.open_by_key(os.getenv("GOOGLE_SHEET_ID")).worksheet("bookings")
+    print(client)
+    spreadsheet = client.open_by_key(os.getenv("GOOGLE_SHEET_ID"))
+    print('spreadshit')
+    print(spreadsheet)
+    sheet = spreadsheet.worksheet("bookings")
+    print('shit')
+    print(sheet)
     print("sheet")
     return sheet
 
