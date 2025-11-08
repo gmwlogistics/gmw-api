@@ -39,13 +39,21 @@ class Booking(BaseModel):
     notes: str | None = None
 
 def get_sheet():
+    print("get_sheet")
     creds_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
+    print("creds_dict")
     creds = Credentials.from_service_account_info(
         creds_dict,
-        scopes=["https://www.googleapis.com/auth/spreadsheets"]
+        scopes=[
+            "https://spreadsheets.google.com/feeds",
+            "https://www.googleapis.com/auth/drive",
+            "https://www.googleapis.com/auth/spreadsheets"]
     )
+    print("creds")
     client = gspread.authorize(creds)
+    print("client")
     sheet = client.open_by_key(os.getenv("GOOGLE_SHEET_ID")).worksheet("bookings")
+    print("sheet")
     return sheet
 
 @app.post("/api/bookings")
@@ -53,10 +61,13 @@ def create_booking(booking: Booking):
     try:
         print('bookings information')
         print(booking)
-        
+
         sheet = get_sheet()
+        print('got sheet')
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print('got timestamp')
         order_id = str(uuid.uuid4())
+        print('got order-id')
         row = [
             order_id,
             booking.customer_name,
