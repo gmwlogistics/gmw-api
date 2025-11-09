@@ -4,7 +4,6 @@ from pydantic import BaseModel
 import gspread
 # from google.oauth2.service_account import Credentials
 from google.oauth2 import service_account
-from oauth2client.service_account import ServiceAccountCredentials
 import datetime
 import os
 import json
@@ -59,9 +58,7 @@ def get_sheet():
         print('creds')
         print(type(creds))
 
-        credss = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, scopes)
-
-        client = gspread.authorize(credss)
+        client = gspread.authorize(creds)
         print('client')
         print(type(client))
 
