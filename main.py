@@ -54,18 +54,27 @@ def get_sheet():
         print('sheet_id')
         print(sheet_id)
 
-        creds = service_account.Credentials.from_service_account_info(credentials_dict, scopes=scopes)
+        creds = service_account.Credentials.from_service_account_info(credentials_dict)
         print('creds')
         print(type(creds))
 
-        client = gspread.authorize(creds)
+        client = gspread.service_account_from_dict(credentials_dict)
         print('client')
         print(type(client))
 
+    except Exception as e:
+        print(e)
+        exit()
+
+    try:
         spreadsheets = client.list_spreadsheet_files() 
         print('spreadsheets')
         print(spreadsheets)
-
+    except Exception as e:
+        print(e)
+        exit()
+    
+    try:
         spreadsheet = client.open_by_key(sheet_id)
         print('spreadsheet')
         print(spreadsheet)
