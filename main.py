@@ -29,13 +29,13 @@ class Booking(BaseModel):
     destination_address: str
     home_size: str | None = None
     special_items: str | None = None
-    packing_service: str | None = None
-    packing_materials: str | None = None
-    specialty_items_check: str | None = None
-    protection_plan: str | None = None
-    estimated_hours: str | None = None
+    packing_service: bool = False
+    packing_materials: bool = False
+    specialty_items_check: bool = False
+    protection_plan: bool = False
+    estimated_hours: int = 0
     payment_method: str | None = None
-    estimated_cost: str | None = None
+    estimated_cost: float = 0
     notes: str | None = None
 
 def get_sheet():
@@ -74,13 +74,13 @@ def create_booking(booking: Booking):
             booking.destination_address,
             booking.home_size or "",
             booking.special_items or "",
-            booking.packing_service or "",
-            booking.packing_materials or "",
-            booking.specialty_items_check or "",
-            booking.protection_plan or "",
-            booking.estimated_hours or "",
+            booking.packing_service or False,
+            booking.packing_materials or False,
+            booking.specialty_items_check or False,
+            booking.protection_plan or False,
+            booking.estimated_hours or 0,
             booking.payment_method or "",
-            booking.estimated_cost or "",
+            booking.estimated_cost or 0,
             booking.notes or "",
             timestamp,
             "Pending"
