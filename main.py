@@ -54,12 +54,7 @@ def get_sheet():
 @app.post("/api/bookings")
 def create_booking(booking: Booking):
     try:
-        print('bookings information')
-        print(booking)
-
         sheet = get_sheet()
-        print('got sheet')
-
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         order_id = str(uuid.uuid4())
         row = [
@@ -85,7 +80,6 @@ def create_booking(booking: Booking):
             timestamp,
             "Pending"
         ]
-        print ('rows are ready')
         sheet.append_row(row)
         return {"status": "success", "order_id": order_id, "message": "Booking saved successfully."}
     except Exception as e:
