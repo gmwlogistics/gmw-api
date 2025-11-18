@@ -46,13 +46,13 @@ class Load(BaseModel):
     delivery: str
     delivery_date: str
     status: str
-    payment_date: str
+    payment_date: str | None = None
     rate: float = 0
     distance: int = 0
     deadhead: int = 0
     weight: int = 0
     equipment: str
-    cargo: str
+    cargo: str | None = None
     notes: str | None = None
     description: str | None = None
     bol: str | None = None
