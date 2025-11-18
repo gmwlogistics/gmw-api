@@ -38,6 +38,33 @@ class Booking(BaseModel):
     estimated_cost: float = 0
     notes: str | None = None
 
+class Load(BaseModel):
+    id: str
+    carrier: str
+    pickup: str
+    pickup_date: str
+    delivery: str
+    delivery_date: str
+    status: str
+    payment_date: str
+    rate: float = 0
+    distance: int = 0
+    deadhead: int = 0
+    weight: int = 0
+    equipment: str
+    cargo: str
+    notes: str | None = None
+    description: str | None = None
+    bol: str | None = None
+    pickup_longitude: str
+    pickup_latitude: str
+    delivery_longitude: str
+    delivery_latitude: str
+    pickup_checkin: str | None = None
+    pickup_checkout: str | None = None
+    delivery_checkin: str | None = None
+    delivery_checkout: str | None = None
+
 def get_sheet():
     try:
         credentials_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
@@ -50,6 +77,57 @@ def get_sheet():
     except Exception as e:
         print(e)
         exit()
+
+def get_load_sheet():
+    try:
+        credentials_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
+        credentials_dict = json.loads(credentials_json)
+        sheet_id = os.getenv("JT_LOAD_SHEET_ID")
+        client = gspread.service_account_from_dict(credentials_dict)
+        spreadsheet = client.open_by_key(sheet_id)
+        sheet = spreadsheet.worksheet("Sheet 1")
+        return sheet
+    except Exception as e:
+        print(e)
+        exit()
+
+
+@app.post("/api/jt/load")
+def create_load(load: Load):
+    try:
+        sheet = get_load_sheet()
+        row = [
+            load.id,
+            load.carrier,
+            load.pickup,
+            load.pickup_date,
+            load.delivery,
+            load.delivery_date,
+            load.status,
+            load.payment_date,
+            load.rate,	
+            load.distance,	
+            load.deadhead,
+            load.weight,
+            load.equipment,	
+            load.cargo,
+            load.notes,	
+            load.description,
+            load.bol,	
+            load.pickup_longitude,
+            load.pickup_latitude,	
+            load.delivery_longitude,	
+            load.delivery_latitude,	
+            load.pickup_checkin,
+            load.pickup_checkout,
+            load.delivery_checkin, 
+            load.delivery_checkout
+        ]
+        sheet.append_row(row)
+        return {"status": "success", "load_id": load.id, "message": "Load saved successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/api/bookings")
 def create_booking(booking: Booking):
