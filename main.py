@@ -95,7 +95,9 @@ def get_load_sheet():
 @app.post("/api/jt/load")
 def create_load(load: Load):
     try:
+        print('func start ----')
         sheet = get_load_sheet()
+        print('sheet ----')
         row = [
             load.id,
             load.carrier,
@@ -123,7 +125,10 @@ def create_load(load: Load):
             load.delivery_checkin, 
             load.delivery_checkout
         ]
+        print('row ----')
+        print(row)
         sheet.append_row(row)
+        print('append row ----')
         return {"status": "success", "load_id": load.id, "message": "Load saved successfully."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
