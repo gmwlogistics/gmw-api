@@ -56,10 +56,10 @@ class Load(BaseModel):
     notes: str | None = None
     description: str | None = None
     bol: str | None = None
-    pickup_longitude: str
-    pickup_latitude: str
-    delivery_longitude: str
-    delivery_latitude: str
+    pickup_longitude: float
+    pickup_latitude: float
+    delivery_longitude: float
+    delivery_latitude: float
     pickup_checkin: str | None = None
     pickup_checkout: str | None = None
     delivery_checkin: str | None = None
